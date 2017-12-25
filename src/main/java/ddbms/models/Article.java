@@ -1,4 +1,4 @@
-package ddbms;
+package ddbms.models;
 
 public class Article {
 

@@ -1,5 +1,7 @@
 package ddbms;
 
+import ddbms.models.Article;
+
 import java.sql.*;
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package ddbms;
+package ddbms.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -6,12 +6,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class TopController {
+public class ArticleController {
 
-    @RequestMapping("/top")
-    public String top(@RequestParam(value="name", required=false, defaultValue="World") String name, Model model) {
+    @RequestMapping("/article")
+    public String article(@RequestParam(value="name", required=false, defaultValue="World") String name, Model model) {
         model.addAttribute("name", name);
-        return "top";
+        return "article";
     }
 
 }
