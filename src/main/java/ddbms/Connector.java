@@ -2,6 +2,7 @@ package ddbms;
 
 import ddbms.models.Article;
 
+import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
@@ -15,7 +16,7 @@ public class Connector {
             try {
                 connector = new Connector();
             } catch (SQLException e) {
-                System.err.println("PgCon with database failed");
+                System.err.println("Connection with database failed");
                 System.err.println(e.getMessage());
                 System.exit(1);
             }
@@ -37,7 +38,7 @@ public class Connector {
         ResultSet rs = st.executeQuery();
         ArrayList<Article> articles = new ArrayList<>();
         while (rs.next()) {
-            articles.add(new Article(new Date(Long.parseLong(rs.getString(1))), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8)));
+            articles.add(new Article(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8)));
         }
         return articles;
     }
@@ -47,8 +48,39 @@ public class Connector {
         st.setString(1, id);
         ResultSet rs = st.executeQuery();
         if (rs.next()) {
-            new Article(new Date(Long.parseLong(rs.getString(2))), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10), rs.getString(11), rs.getString(12));
+            return new Article(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10), rs.getString(11));
         }
         return null;
+    }
+
+    public void createArticle(Article article) throws SQLException {
+        PreparedStatement st = sqlInsertTuple("INSERT INTO article VALUES ", article, Article.class);
+        st.execute();
+    }
+
+    private PreparedStatement sqlInsertTuple(String sqlQueryBeginning, Object entry, Class<?> model) throws SQLException {
+        StringBuilder sqlTuple = new StringBuilder("");
+        boolean first = true;
+        for (Field field : model.getDeclaredFields()) {
+            if (first) {
+                first = false;
+            } else {
+                sqlTuple.append(",");
+            }
+            sqlTuple.append("?");
+        }
+        String sql = sqlQueryBeginning + "(" + sqlTuple + ");";
+        PreparedStatement st = conn.prepareStatement(sql);
+        int i = 1;
+        for (Field field : model.getDeclaredFields()) {
+            try {
+                field.setAccessible(true);
+                st.setString(i, field.get(entry).toString());
+            } catch (IllegalAccessException e) {
+                System.err.println(e.getMessage());
+            }
+            i++;
+        }
+        return st;
     }
 }

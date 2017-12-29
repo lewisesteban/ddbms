@@ -1,9 +1,10 @@
-package ddbms.controllers;
+package ddbms.storage;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+/*
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
@@ -108,3 +109,4 @@ public class S3Storage {
         }
     }
 }
+*/

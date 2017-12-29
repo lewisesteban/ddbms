@@ -1,10 +1,10 @@
 package ddbms.models;
 
-import java.util.Date;
+import java.util.UUID;
 
 public class Article {
 
-    private Date timestamp;
+    private Long timestamp;
     private String aid;
     private String title;
     private String category;
@@ -16,15 +16,11 @@ public class Article {
     private String image = null;
     private String video = null;
 
-    public Article(Date timestamp, String aid, String title, String category, String abst, String articleTags, String authors, String language, String text, String image, String video) {
-        this(timestamp, aid, title, category, abst, articleTags, authors, language);
-        this.text = text;
-        this.image = image;
-        this.video = video;
-    }
-
-    public Article(Date timestamp, String aid, String title, String category, String abst, String articleTags, String authors, String language) {
-        this.timestamp = timestamp;
+    /**
+     * Constructor for getting an article list
+     */
+    public Article(String timestamp, String aid, String title, String category, String abst, String articleTags, String authors, String language) {
+        this.timestamp = Long.parseLong(timestamp);
         this.aid = aid;
         this.title = title;
         this.category = category;
@@ -34,7 +30,34 @@ public class Article {
         this.language = language;
     }
 
-    public Date getTimestamp() {
+    /**
+     * Constructor for getting a single article
+     */
+    public Article(String timestamp, String aid, String title, String category, String abst, String articleTags, String authors, String language, String text, String image, String video) {
+        this(timestamp, aid, title, category, abst, articleTags, authors, language);
+        this.text = text;
+        this.image = image;
+        this.video = video;
+    }
+
+    /**
+     * Constructor for creating an article
+     */
+    public Article(String aid, Long timestamp, String title, String category, String abst, String articleTags, String authors, String language, String text, String image, String video) {
+        this.aid = aid;
+        this.timestamp = timestamp;
+        this.title = title;
+        this.category = category;
+        this.abst = abst;
+        this.articleTags = articleTags;
+        this.authors = authors;
+        this.language = language;
+        this.text = text;
+        this.image = image;
+        this.video = video;
+    }
+
+    public Long getTimestamp() {
         return timestamp;
     }
 

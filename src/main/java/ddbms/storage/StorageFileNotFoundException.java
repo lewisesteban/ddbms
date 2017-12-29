@@ -1,4 +1,4 @@
-package hello.storage;
+package ddbms.storage;
 
 public class StorageFileNotFoundException extends StorageException {
 
