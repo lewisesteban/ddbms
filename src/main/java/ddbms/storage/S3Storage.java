@@ -1,17 +1,20 @@
 package ddbms.storage;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-/*
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Random;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 
 public class S3Storage {
@@ -23,8 +26,8 @@ public class S3Storage {
         BasicAWSCredentials creds = new BasicAWSCredentials("access_key", "secret_key");
         AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(creds)).build();
         try {
-            if (args) {
-              this.key = args[0];
+            if (args.length > 0) {
+              key = args[0];
             }
             System.out.println("Downloading an object");
             S3Object s3object = s3Client.getObject(new GetObjectRequest(
@@ -82,12 +85,13 @@ public class S3Storage {
     AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(creds)).build();
         try {
             uploadFileName = args[0];
-            keyName = String.format("%s.%s", sdf.format(new Date()),
-                              random.nextInt(9)) + ".jpg";
+
+            key = String.format("%s.%s", new SimpleDateFormat("ddMMyyyy").format(new Date()),
+                              new Random().nextInt(9)) + ".jpg";
             System.out.println("Uploading a new object to S3 from a file\n");
             File file = new File(uploadFileName);
-            s3client.putObject(new PutObjectRequest(
-            		                 bucketName, keyName, file));
+            s3Client.putObject(new PutObjectRequest(
+            		                 bucketName, key, file));
             return uploadFileName;
          } catch (AmazonServiceException ase) {
             System.out.println("Caught an AmazonServiceException, which " +
@@ -99,6 +103,7 @@ public class S3Storage {
             System.out.println("AWS Error Code:   " + ase.getErrorCode());
             System.out.println("Error Type:       " + ase.getErrorType());
             System.out.println("Request ID:       " + ase.getRequestId());
+            throw ase;
         } catch (AmazonClientException ace) {
             System.out.println("Caught an AmazonClientException, which " +
             		"means the client encountered " +
@@ -106,7 +111,7 @@ public class S3Storage {
                     "communicate with S3, " +
                     "such as not being able to access the network.");
             System.out.println("Error Message: " + ace.getMessage());
+            throw ace;
         }
     }
 }
-*/
