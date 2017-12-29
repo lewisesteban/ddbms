@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
+@EnableConfigurationProperties(StorageProperties.class)
 public class Application {
 
     public static void main(String[] args) {
@@ -12,4 +13,11 @@ public class Application {
         //Connector.get();
     }
 
+    @Bean
+    CommandLineRunner init(StorageService storageService) {
+      return (args) -> {
+          storageService.deleteAll();
+          storageService.init();
+        };
+    }
 }
