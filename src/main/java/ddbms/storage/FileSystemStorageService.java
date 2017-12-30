@@ -1,5 +1,6 @@
 package ddbms.storage;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -39,7 +40,12 @@ public class FileSystemStorageService implements StorageService {
                         "Cannot store file with relative path outside current directory "
                                 + filename);
             }
-            S3Storage.UploadObject(new String[] { filename }); //store la return value de ce truc dans la bdd (c'est l'emplacement dans le bucket) https://s3-ap-northeast-1.amazonaws.com/oha.you/la_return_value_de_la_fonction_mdr (a tester d'ailleurs, pas dit que ça marche)
+            //File S3File = new File(file.getOriginalFilename());
+            //file.transferTo(S3File);
+            File S3File = File.createTempFile(filename, filename.substring(filename.lastIndexOf(".")));
+            S3File.deleteOnExit();
+            file.transferTo(S3File);
+            S3Storage.UploadObject(S3File, filename.substring(filename.lastIndexOf("."))); //store la return value de ce truc dans la bdd (c'est l'emplacement dans le bucket) https://s3-ap-northeast-1.amazonaws.com/oha.you/la_return_value_de_la_fonction_mdr (a tester d'ailleurs, pas dit que ça marche)
             Files.copy(file.getInputStream(), this.rootLocation.resolve(filename),
                     StandardCopyOption.REPLACE_EXISTING);
         }

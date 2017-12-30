@@ -14,6 +14,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 
@@ -80,19 +81,18 @@ public class S3Storage {
         System.out.println();
     }
 
-	public static String UploadObject(String[] args) throws IOException {
-    BasicAWSCredentials creds = new BasicAWSCredentials("access_key", "secret_key");
-    AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(creds)).build();
+	public static String UploadObject(File file, String extension) throws IOException {
+    BasicAWSCredentials creds = new BasicAWSCredentials("dtc", "cmb");
+    AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withRegion("sousl'océan").withCredentials(new AWSStaticCredentialsProvider(creds)).build();
         try {
-            uploadFileName = args[0];
-
             key = String.format("%s.%s", new SimpleDateFormat("ddMMyyyy").format(new Date()),
-                              new Random().nextInt(9)) + ".jpg";
+                              new Random().nextInt(9));
+            key += extension;
             System.out.println("Uploading a new object to S3 from a file\n");
-            File file = new File(uploadFileName);
+
             s3Client.putObject(new PutObjectRequest(
             		                 bucketName, key, file));
-            return uploadFileName;
+            return key;
          } catch (AmazonServiceException ase) {
             System.out.println("Caught an AmazonServiceException, which " +
             		"means your request made it " +
