@@ -4,13 +4,13 @@ public class Read {
     private Long timestamp;
     private String uid;
     private String aid;
+    private Boolean readOrNot = false;
     private Integer readTimeLength = -1;
     private String readSequence = "";
-    private Boolean readOrNot = false;
     private Boolean agreeOrNot = false;
     private Boolean commentOrNot = false;
-    private String commentDetail = null;
     private Boolean shareOrNot = false;
+    private String commentDetail = "";
 
     /**
      * Constructor for getting an entry

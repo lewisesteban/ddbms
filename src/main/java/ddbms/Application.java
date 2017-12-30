@@ -1,6 +1,7 @@
 package ddbms;
 
 import ddbms.models.Article;
+import ddbms.models.Read;
 import ddbms.storage.StorageProperties;
 import ddbms.storage.StorageService;
 import org.springframework.boot.CommandLineRunner;
@@ -18,12 +19,14 @@ public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
 
+/*
         try {
-            Connector.get().createArticle(new Article("1234567", System.currentTimeMillis(), "title", "category", "abs", "tag", "genius", "english", "bla bla bla", "none", "no video"));
-            Connector.get().getArticle("0");
+            Dal.get().createArticle(new Article("1234568", System.currentTimeMillis(), "titl", "categor", "ab", "ta", "geniu", "e", "bla bla bl", "non", "no vide"));
+            Dal.get().getArticle("1234568");
         } catch (SQLException e) {
             e.printStackTrace();
         }
+*/
     }
 
     @Bean

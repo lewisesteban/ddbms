@@ -56,6 +56,7 @@ public class User {
         this.region = region;
         this.role = role;
         this.preferTags = preferTags;
+        this.timestamp = System.currentTimeMillis();
     }
 
     public Long getTimestamp() {
