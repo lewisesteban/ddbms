@@ -145,6 +145,37 @@ public class Dal {
         insertTuple("INSERT INTO \"user\" VALUES ", user, User.class);
     }
 
+    public void updateBeread(BeRead beRead) throws SQLException {
+        PreparedStatement st = conn.prepareStatement("update be_read set " +
+        "\"timestamp\" = ?, \"readNum\" = ?, \"readUidList\" = ?, \"commentNum\" = ?, \"commentUidList\" = ?," +
+        "\"agreeNum\" = ?, \"agreeUidList\" = ?, \"shareNum\" = ?, \"shareUidList\" = ? " +
+        "where aid = ?;");
+        st.setString(1, beRead.getTimestamp().toString());
+        st.setString(2, Integer.toString(beRead.getReadNum()));
+        st.setString(3, beRead.getReadUidsString());
+        st.setString(4, Integer.toString(beRead.getCommentNum()));
+        st.setString(5, beRead.getCommentUidsString());
+        st.setString(6, Integer.toString(beRead.getAgreeNum()));
+        st.setString(7, beRead.getAgreeUidsString());
+        st.setString(8, Integer.toString(beRead.getShareNum()));
+        st.setString(9, beRead.getShareUidsString());
+        st.setString(10, beRead.getAid());
+        st.execute();
+    }
+
+    public void updateRead(Read read) throws SQLException {
+        PreparedStatement st = conn.prepareStatement("update user_read set " +
+        "\"agreeOrNot\" = ?, \"commentOrNot\" = ?, \"shareOrNot\" = ?, \"commentDetail\" = ? " +
+        "where \"uid\" = ? and \"aid\" = ?;");
+        st.setString(1, read.isAgreeOrNot() ? "1" : "0");
+        st.setString(2, read.isShareOrNot() ? "1" : "0");
+        st.setString(3, read.isCommentOrNot() ? "1" : "0");
+        st.setString(4, read.getCommentDetail());
+        st.setString(5, read.getUid());
+        st.setString(6, read.getAid());
+        st.execute();
+    }
+
     private void insertTuple(String sqlQueryBeginning, Object entry, Class<?> model) throws SQLException {
         StringBuilder sqlTuple = new StringBuilder("");
         boolean first = true;

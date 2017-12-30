@@ -15,7 +15,7 @@ public class Read {
     /**
      * Constructor for getting an entry
      */
-    public Read(String timestamp, String uid, String aid, String readTimeLength, String readSequence, String readOrNot, String agreeOrNot, String commentOrNot, String commentDetail, String shareOrNot) {
+    public Read(String timestamp, String uid, String aid, String readOrNot, String readTimeLength, String readSequence, String agreeOrNot, String commentOrNot, String shareOrNot, String commentDetail) {
         this.timestamp = Long.parseLong(timestamp);
         this.uid = uid;
         this.aid = aid;

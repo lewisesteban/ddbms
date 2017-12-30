@@ -61,12 +61,18 @@ public class BeRead {
         return readUidList.split(";");
     }
 
+    public String getReadUidsString() { return readUidList; }
+
     public int getCommentNum() {
         return commentNum;
     }
 
     public String[] getCommentUids() {
         return commentUidList.split(";");
+    }
+
+    public String getCommentUidsString() {
+        return commentUidList;
     }
 
     public int getAgreeNum() {
@@ -77,15 +83,30 @@ public class BeRead {
         return agreeUidList.split(";");
     }
 
+    public String getAgreeUidsString() {
+        return agreeUidList;
+    }
+
     public int getShareNum() {
         return shareNum;
     }
 
-    public String getShareUidList() {
+    public String[] getShareUids() {
+        return shareUidList.split(";");
+    }
+
+    public String getShareUidsString() {
         return shareUidList;
     }
-    
+
+    public void read(String uid) {
+        this.timestamp = System.currentTimeMillis();
+        readUidList = addToList(readUidList, uid);
+        readNum++;
+    }
+
     public void comment(String uid, boolean undo) {
+        this.timestamp = System.currentTimeMillis();
         if (undo) {
             commentUidList = removeFromList(commentUidList, uid);
             commentNum--;
@@ -96,6 +117,7 @@ public class BeRead {
     }
 
     public void agree(String uid, boolean undo) {
+        this.timestamp = System.currentTimeMillis();
         if (undo) {
             agreeUidList = removeFromList(agreeUidList, uid);
             agreeNum--;
@@ -106,6 +128,7 @@ public class BeRead {
     }
 
     public void share(String uid, boolean undo) {
+        this.timestamp = System.currentTimeMillis();
         if (undo) {
             shareUidList = removeFromList(shareUidList, uid);
             shareNum--;

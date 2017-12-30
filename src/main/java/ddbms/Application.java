@@ -1,6 +1,7 @@
 package ddbms;
 
 import ddbms.models.Article;
+import ddbms.models.BeRead;
 import ddbms.models.Read;
 import ddbms.storage.StorageProperties;
 import ddbms.storage.StorageService;
@@ -19,14 +20,14 @@ public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
 
-/*
         try {
-            Dal.get().createArticle(new Article("1234568", System.currentTimeMillis(), "titl", "categor", "ab", "ta", "geniu", "e", "bla bla bl", "non", "no vide"));
-            Dal.get().getArticle("1234568");
+            Dal.get().createBeread(new BeRead("a"));
+            BeRead r = Dal.get().getBeRead("a");
+            r.agree("u", false);
+            Dal.get().updateBeread(r);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-*/
     }
 
     @Bean
