@@ -1,8 +1,6 @@
 package ddbms;
 
-import ddbms.models.Article;
 import ddbms.models.BeRead;
-import ddbms.models.Read;
 import ddbms.storage.StorageProperties;
 import ddbms.storage.StorageService;
 import org.springframework.boot.CommandLineRunner;
@@ -21,10 +19,7 @@ public class Application {
         SpringApplication.run(Application.class, args);
 
         try {
-            Dal.get().createBeread(new BeRead("a"));
-            BeRead r = Dal.get().getBeRead("a");
-            r.agree("u", false);
-            Dal.get().updateBeread(r);
+            Dal.get().initDb();
         } catch (SQLException e) {
             e.printStackTrace();
         }

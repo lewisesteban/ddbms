@@ -30,6 +30,8 @@ public class Dal {
     }
 
     public void initDb() throws SQLException {
+
+        // create missing tables
         PreparedStatement st = conn.prepareStatement("drop table if exists popular_rank;" +
         "create table popular_rank (\"id\" varchar(64), \"timestamp\" char(14), temporalGranularity varchar(32), articleAidList text);" +
         "drop table if exists be_read;" +
@@ -38,6 +40,33 @@ public class Dal {
                 "\"shareNum\" varchar(16),\"shareUidList\" text);");
         st.execute();
         st.close();
+
+        // fill be-read table
+        st = conn.prepareStatement("select * from user_read order by aid;");
+        ResultSet rs = st.executeQuery();
+        BeRead br = null;
+        while (rs.next()) {
+            String aid = rs.getString("aid");
+            String uid = rs.getString("uid");
+            if (br == null || !br.getAid().equals(aid)) {
+                if (br != null)
+                    createBeread(br);
+                br = new BeRead(aid);
+            }
+            if (rs.getString("readOrNot").equals("1"))
+                br.read(uid);
+            if (rs.getString("agreeOrNot").equals("1"))
+                br.agree(uid, false);
+            if (rs.getString("commentOrNot").equals("1"))
+                br.comment(uid, false);
+            if (rs.getString("shareOrNot").equals("1"))
+                br.share(uid, false);
+        }
+        if (br != null)
+            createBeread(br);
+
+        // fill popular-rank table
+        // TODO
     }
 
     public ArrayList<Article> getArticleList(int pageNumber, int pageSize, String category, String language) throws SQLException {

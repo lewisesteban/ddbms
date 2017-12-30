@@ -58,4 +58,14 @@ public class Domain {
         return Dal.get().getArticle(aid);
     }
 
+    // top list
+    // S3
+
+    // init: separate users table
+    // program arg: beijing/hongkong
+
+    // view comments
+    // add comment
+    // view user
+    // view users from other area (beijing/hongkong)
 }
