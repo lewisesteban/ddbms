@@ -66,7 +66,7 @@ public class Dal {
             createBeread(br);
 
         // fill popular-rank table
-        // TODO
+        Domain.fillPopularRankTable();
     }
 
     public ArrayList<Article> getArticleList(int pageNumber, int pageSize, String category, String language) throws SQLException {
@@ -75,6 +75,28 @@ public class Dal {
         st.setInt(2, pageSize * pageNumber);
         st.setString(3, category);
         st.setString(4, language);
+        ResultSet rs = st.executeQuery();
+        ArrayList<Article> articles = new ArrayList<>();
+        while (rs.next()) {
+            articles.add(new Article(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8)));
+        }
+        rs.close();
+        st.close();
+        return articles;
+    }
+
+    public ArrayList<Article> getArticleList(String[] articleIds) throws SQLException {
+        StringBuilder sql = new StringBuilder("Select \"timestamp\", aid, title, category, abstract, \"articleTags\", authors, \"language\" from article WHERE aid IN (");
+        for (int i = 0; i < articleIds.length; ++i) {
+            if (i != 0)
+                sql.append(",");
+            sql.append("?");
+        }
+        sql.append(");");
+        PreparedStatement st = conn.prepareStatement(sql.toString());
+        for (int i = 0; i < articleIds.length; ++i) {
+            st.setString(i + 1, articleIds[i]);
+        }
         ResultSet rs = st.executeQuery();
         ArrayList<Article> articles = new ArrayList<>();
         while (rs.next()) {
@@ -118,16 +140,31 @@ public class Dal {
         return entry;
     }
 
-    public ArrayList<PopularRank> getPopularRank() throws SQLException {
-        PreparedStatement st = conn.prepareStatement("select * from popular_rank;");
+    public ArrayList<String> getPopularArticles(Long minTimestamp, int nbArticles) throws SQLException {
+        PreparedStatement st = conn.prepareStatement("select aid, count(*) from user_read " +
+                "where (user_read.\"timestamp\">? and (\"agreeOrNot\"='1' or \"commentOrNot\"='1' or \"shareOrNot\"='1')) " +
+                "group by aid order by count(*) desc limit ?;");
+        st.setString(1, minTimestamp.toString());
+        st.setInt(2, nbArticles);
         ResultSet rs = st.executeQuery();
-        ArrayList<PopularRank> list = new ArrayList<>();
+        ArrayList<String> articles = new ArrayList<>();
         while (rs.next()) {
-            list.add(new PopularRank(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4)));
+            articles.add(rs.getString(1));
+        }
+        return articles;
+    }
+
+    public PopularRank getPopularRank(String temporalGranularity) throws SQLException {
+        PreparedStatement st = conn.prepareStatement("select * from popular_rank where temporalGranularity=?;");
+        st.setString(1, temporalGranularity);
+        ResultSet rs = st.executeQuery();
+        PopularRank pr = null;
+        if (rs.next()) {
+            pr = new PopularRank(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4));
         }
         rs.close();
         st.close();
-        return list;
+        return pr;
     }
 
     public void clearPopularRank() throws SQLException {

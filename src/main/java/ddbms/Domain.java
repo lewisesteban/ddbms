@@ -2,10 +2,17 @@ package ddbms;
 
 import ddbms.models.Article;
 import ddbms.models.BeRead;
+import ddbms.models.PopularRank;
 import ddbms.models.Read;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+enum temporalGranularity {
+    daily,
+    weekly,
+    monthly
+}
 
 public class Domain {
 
@@ -58,7 +65,37 @@ public class Domain {
         return Dal.get().getArticle(aid);
     }
 
-    // top list
+    /**
+     * Updates the popular tables
+     */
+    public static void fillPopularRankTable() throws SQLException {
+        Dal.get().clearPopularRank();
+        Long currentTime = 1506000000008L; // all entries in the DB are too old!
+        Dal.get().createPopularRank(new PopularRank("daily",
+                Dal.get().getPopularArticles(currentTime - 1000L * 60L * 60L * 24L, 5)));
+        Dal.get().createPopularRank(new PopularRank("weekly",
+                Dal.get().getPopularArticles(currentTime - 7L * 1000L * 60L * 60L * 24L, 5)));
+        Dal.get().createPopularRank(new PopularRank("monthly",
+                Dal.get().getPopularArticles(currentTime - 30L * 1000L * 60L * 60L * 24L, 5)));
+    }
+
+    /**
+     * Returns the most popular articles without their content
+     */
+    public static ArrayList<Article> getPopularArticles(temporalGranularity t) throws SQLException {
+        String tStr;
+        if (t == temporalGranularity.daily)
+            tStr = "daily";
+        else if (t == temporalGranularity.weekly)
+            tStr = "weekly";
+        else
+            tStr = "monthly";
+        PopularRank pr = Dal.get().getPopularRank(tStr);
+        return Dal.get().getArticleList(pr.getArticleIds());
+    }
+
+
+
     // S3
 
     // init: separate users table
