@@ -124,6 +124,20 @@ public class Dal {
         return list;
     }
 
+    public Read getRead(String uid, String aid) throws SQLException {
+        PreparedStatement st = conn.prepareStatement("select * from user_read where uid = ? and aid = ?;");
+        st.setString(1, uid);
+        st.setString(2, aid);
+        ResultSet rs = st.executeQuery();
+        Read read = null;
+        if (rs.next()) {
+            read = new Read(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10));
+        }
+        rs.close();
+        st.close();
+        return read;
+    }
+
     public void createRead(Read entry) throws SQLException {
         insertTuple("INSERT INTO user_read VALUES ", entry, Read.class);
     }

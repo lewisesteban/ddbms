@@ -1,7 +1,5 @@
 package ddbms.models;
 
-import java.util.UUID;
-
 public class Article {
 
     private Long timestamp;
