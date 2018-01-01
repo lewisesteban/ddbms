@@ -1,9 +1,6 @@
 package ddbms;
 
-import ddbms.models.Article;
-import ddbms.models.BeRead;
-import ddbms.models.PopularRank;
-import ddbms.models.Read;
+import ddbms.models.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -94,15 +91,32 @@ public class Domain {
         return Dal.get().getArticleList(pr.getArticleIds());
     }
 
+    /**
+     * Returns 'Read' objects containing comments
+     */
+    public static ArrayList<Read> getComments(String articleId, int pageNumber, int pageSize) throws SQLException {
+        return Dal.get().getArticleComments(articleId, pageNumber, pageSize);
+    }
 
+    /**
+     * Creates a user
+     */
+    public static void createUser(User user) throws SQLException {
+        Dal.get().createUser(user);
+    }
 
-    // S3
+    /**
+     * Returns a user
+     */
+    public static User getUser(String uid) throws SQLException {
+        return Dal.get().getUser(uid);
+    }
+
 
     // init: separate users table
     // program arg: beijing/hongkong
 
-    // view comments
     // add comment
-    // view user
+    // agree, share
     // view users from other area (beijing/hongkong)
 }

@@ -190,6 +190,21 @@ public class Dal {
         return list;
     }
 
+    public ArrayList<Read> getArticleComments(String aid, int pageNumber, int pageSize) throws SQLException {
+        PreparedStatement st = conn.prepareStatement("select * from user_read where aid = ? and \"commentOrNot\" = '1' order by \"timestamp\" desc limit ? offset ?;");
+        st.setString(1, aid);
+        st.setInt(2, pageSize);
+        st.setInt(3, pageNumber * pageSize);
+        ResultSet rs = st.executeQuery();
+        ArrayList<Read> list = new ArrayList<>();
+        while (rs.next()) {
+            list.add(new Read(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10)));
+        }
+        rs.close();
+        st.close();
+        return list;
+    }
+
     public Read getRead(String uid, String aid) throws SQLException {
         PreparedStatement st = conn.prepareStatement("select * from user_read where uid = ? and aid = ?;");
         st.setString(1, uid);
