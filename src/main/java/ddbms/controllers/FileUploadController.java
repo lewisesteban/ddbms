@@ -1,6 +1,7 @@
 package ddbms.controllers;
 
 import java.io.IOException;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import ddbms.storage.StorageFileNotFoundException;
@@ -70,13 +71,13 @@ public class FileUploadController {
         String image = storageService.store(file);
        redirectAttributes.addFlashAttribute("message",
                 "You successfully uploaded " + file.getOriginalFilename() + "!");
-        String aid = "-15123";
-        String timestamp = "le 12 novembre";
-        Article article = new Article(aid, timestamp, title, category, abst, articleTags, authors, language, text, image, "NULL");
+        String aid = UUID.randomUUID().toString().substring(0, 7);
+        String timestamp = Long.toString(System.currentTimeMillis());
+        Article article = new Article(timestamp, aid, title, category, abst, articleTags, authors, language, text, image, "NULL");
         try {
             Domain.createArticle(article);
         } catch (Exception e) {
-
+            System.out.println(e.getMessage());
         }
         return "redirect:/";
     }
