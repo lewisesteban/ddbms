@@ -28,7 +28,7 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public void store(MultipartFile file) {
+    public String store(MultipartFile file) {
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
         try {
             if (file.isEmpty()) {
@@ -45,9 +45,10 @@ public class FileSystemStorageService implements StorageService {
             File S3File = File.createTempFile(filename, filename.substring(filename.lastIndexOf(".")));
             S3File.deleteOnExit();
             file.transferTo(S3File);
-            S3Storage.UploadObject(S3File, filename.substring(filename.lastIndexOf("."))); //store la return value de ce truc dans la bdd (c'est l'emplacement dans le bucket) https://s3-ap-northeast-1.amazonaws.com/oha.you/la_return_value_de_la_fonction_mdr (a tester d'ailleurs, pas dit que ça marche)
+            String S3Reference = S3Storage.UploadObject(S3File, filename.substring(filename.lastIndexOf("."))); //store la return value de ce truc dans la bdd (c'est l'emplacement dans le bucket) https://s3-ap-northeast-1.amazonaws.com/oha.you/la_return_value_de_la_fonction_mdr (a tester d'ailleurs, pas dit que ça marche)
             Files.copy(file.getInputStream(), this.rootLocation.resolve(filename),
                     StandardCopyOption.REPLACE_EXISTING);
+            return (S3Reference);
         }
         catch (IOException e) {
             throw new StorageException("Failed to store file " + filename, e);

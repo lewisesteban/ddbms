@@ -5,6 +5,9 @@ import java.util.stream.Collectors;
 
 import ddbms.storage.StorageFileNotFoundException;
 import ddbms.storage.StorageService;
+import ddbms.models.Article;
+import ddbms.Dal;
+import ddbms.Domain;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -52,13 +55,29 @@ public class FileUploadController {
     }
 
     @PostMapping("/")
-    public String handleFileUpload(@RequestParam("file") MultipartFile file,
+    public String handleFileUpload(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("title") String title,
+            @RequestParam("category") String category,
+            @RequestParam("abst") String abst,
+            @RequestParam("articleTags") String articleTags,
+            @RequestParam("authors") String authors,
+            @RequestParam("language") String language,
+            @RequestParam("text") String text,
+
             RedirectAttributes redirectAttributes) {
 
-        storageService.store(file);
-        redirectAttributes.addFlashAttribute("message",
+        String image = storageService.store(file);
+       redirectAttributes.addFlashAttribute("message",
                 "You successfully uploaded " + file.getOriginalFilename() + "!");
+        String aid = "-15123";
+        String timestamp = "le 12 novembre";
+        Article article = new Article(aid, timestamp, title, category, abst, articleTags, authors, language, text, image, "NULL");
+        try {
+            Domain.createArticle(article);
+        } catch (Exception e) {
 
+        }
         return "redirect:/";
     }
 
