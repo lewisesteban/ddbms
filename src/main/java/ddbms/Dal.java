@@ -10,6 +10,8 @@ public class Dal {
 
     private static Dal connector = null;
 
+    private static String[] possibleRegions = { "Beijing", "Hong Kong" };
+
     public static Dal get() {
         if (connector == null) {
             try {
@@ -24,12 +26,17 @@ public class Dal {
     }
 
     private Connection conn = null;
+    private String userTableName = "user";
+    private String region = null;
 
     private Dal() throws SQLException {
         conn = PgCon.get();
     }
 
-    public void initDb() throws SQLException {
+    public void initDb(String region) throws SQLException {
+
+        this.region = region;
+        this.userTableName = "user_" + region.toLowerCase().replace(" ", "");
 
         // create missing tables
         PreparedStatement st = conn.prepareStatement("drop table if exists popular_rank;" +
@@ -64,9 +71,63 @@ public class Dal {
         }
         if (br != null)
             createBeread(br);
+        rs.close();
+        st.close();
 
         // fill popular-rank table
         Domain.fillPopularRankTable();
+
+        // separate users
+        if (tableExists("user")) {
+            for (String possibleRegion : possibleRegions) {
+                initRegionalUsers(possibleRegion);
+            }
+            st = conn.prepareStatement("drop table if exists \"user\";");
+            st.execute();
+            st.close();
+        }
+    }
+
+    private boolean tableExists(String table) {
+        PreparedStatement st = null;
+        try {
+            st = conn.prepareStatement("select 1 from \"" + table + "\" limit 1;");
+            st.execute();
+            return true;
+        } catch (SQLException e) {
+            return false;
+        } finally {
+            if (st != null)
+                try {
+                    st.close();
+                } catch (SQLException ignored) {
+                }
+        }
+    }
+
+    private void initRegionalUsers(String region) throws SQLException {
+        String tableName = "user_" + region.toLowerCase().replace(" ", "");
+        PreparedStatement st = conn.prepareStatement("DROP TABLE IF EXISTS " + tableName + ";" +
+                "CREATE TABLE " + tableName + " (\n" +
+                "  \"timestamp\" char(14) DEFAULT NULL,\n" +
+                "  \"uid\" char(5) DEFAULT NULL,\n" +
+                "  \"name\" char(9) DEFAULT NULL,\n" +
+                "  \"gender\" char(7) DEFAULT NULL,\n" +
+                "  \"email\" char(10) DEFAULT NULL,\n" +
+                "  \"phone\" char(10) DEFAULT NULL,\n" +
+                "  \"dept\" char(9) DEFAULT NULL,\n" +
+                "  \"grade\" char(7) DEFAULT NULL,\n" +
+                "  \"language\" char(3) DEFAULT NULL,\n" +
+                "  \"region\" char(10) DEFAULT NULL,\n" +
+                "  \"role\" char(6) DEFAULT NULL,\n" +
+                "  \"preferTags\" char(7) DEFAULT NULL,\n" +
+                "  \"obtainedCredits\" char(3) DEFAULT NULL\n);\n");
+        st.execute();
+        st.close();
+        st = conn.prepareStatement("insert into " + tableName + " ( select * from \"user\" where region = ? );");
+        st.setString(1, region);
+        st.execute();
+        st.close();
     }
 
     public ArrayList<Article> getArticleList(int pageNumber, int pageSize, String category, String language) throws SQLException {
@@ -224,7 +285,18 @@ public class Dal {
     }
 
     public User getUser(String uid) throws SQLException {
-        PreparedStatement st = conn.prepareStatement("select * from \"user\" where uid = ?;");
+        User user = getRegionalUser(uid, region);
+        for (int i = 0; user == null && i < possibleRegions.length; ++i) {
+            if (!possibleRegions[i].equals(region)) {
+                user = getRegionalUser(uid, possibleRegions[i]);
+            }
+        }
+        return user;
+    }
+
+    public User getRegionalUser(String uid, String region) throws SQLException {
+        String tableName = "user_" + region.toLowerCase().replace(" ", "");
+        PreparedStatement st = conn.prepareStatement("select * from " + tableName + " where uid = ?;");
         st.setString(1, uid);
         ResultSet rs = st.executeQuery();
         User user = null;
@@ -237,7 +309,7 @@ public class Dal {
     }
 
     public void createUser(User user) throws SQLException {
-        insertTuple("INSERT INTO \"user\" VALUES ", user, User.class);
+        insertTuple("INSERT INTO " + userTableName + " VALUES ", user, User.class);
     }
 
     public void updateBeread(BeRead beRead) throws SQLException {

@@ -1,6 +1,5 @@
 package ddbms;
 
-import ddbms.models.BeRead;
 import ddbms.storage.StorageProperties;
 import ddbms.storage.StorageService;
 import org.springframework.boot.CommandLineRunner;
@@ -16,10 +15,28 @@ import java.sql.SQLException;
 public class Application {
 
     public static void main(String[] args) {
+        if (args.length != 1) {
+            System.err.println("Program argument required: 'beijing' or 'hongkong'");
+            System.exit(1);
+        }
+
         SpringApplication.run(Application.class, args);
 
         try {
-            Dal.get().initDb();
+            String region = null;
+            switch (args[0]) {
+                case "beijing":
+                    region = "Beijing";
+                    break;
+                case "hongkong":
+                    region = "Hong Kong";
+                    break;
+                default:
+                    System.err.println("Program argument required: 'beijing' or 'hongkong'");
+                    System.exit(1);
+            }
+            Domain.setRegion(region);
+            Dal.get().initDb(region);
         } catch (SQLException e) {
             e.printStackTrace();
         }

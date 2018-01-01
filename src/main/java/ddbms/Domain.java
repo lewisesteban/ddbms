@@ -13,6 +13,16 @@ enum temporalGranularity {
 
 public class Domain {
 
+    private static String region = null;
+
+    public static void setRegion(String region) {
+        Domain.region = region;
+    }
+
+    public static String getRegion() {
+        return region;
+    }
+
     /**
      * Returns a list of articles without their content
      */
@@ -101,7 +111,10 @@ public class Domain {
     /**
      * Creates a user
      */
-    public static void createUser(User user) throws SQLException {
+    public static void createUser(User user) throws SQLException, Domain.Error {
+        if (region != null && !user.getRegion().equals(region)) {
+            throw new Error("invalid region: " + user.getRegion() + " (should be " + region + ")");
+        }
         Dal.get().createUser(user);
     }
 
@@ -112,11 +125,11 @@ public class Domain {
         return Dal.get().getUser(uid);
     }
 
+    // TODO: comment, agree, share
 
-    // init: separate users table
-    // program arg: beijing/hongkong
-
-    // add comment
-    // agree, share
-    // view users from other area (beijing/hongkong)
+    public static class Error extends RuntimeException {
+        public Error(String message) {
+            super(message);
+        }
+    }
 }
