@@ -17,7 +17,7 @@ public class Article {
     /**
      * Constructor for getting an article list
      */
-    public Article(String timestamp, String aid, String title, String category, String abst, String articleTags, String authors, String language) {
+    public Article(String timestamp, String aid, String title, String category, String abst, String articleTags, String authors, String language, String image) {
         this.timestamp = Long.parseLong(timestamp);
         this.aid = aid;
         this.title = title;
@@ -26,15 +26,15 @@ public class Article {
         this.articleTags = articleTags;
         this.authors = authors;
         this.language = language;
+        this.image = image;
     }
 
     /**
      * Constructor for getting a single article
      */
     public Article(String timestamp, String aid, String title, String category, String abst, String articleTags, String authors, String language, String text, String image, String video) {
-        this(timestamp, aid, title, category, abst, articleTags, authors, language);
+        this(timestamp, aid, title, category, abst, articleTags, authors, language, image);
         this.text = text;
-        this.image = image;
         this.video = video;
     }
 

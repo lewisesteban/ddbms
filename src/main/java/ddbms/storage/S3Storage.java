@@ -82,8 +82,8 @@ public class S3Storage {
     }
 
 	public static String UploadObject(File file, String extension) throws IOException {
-    BasicAWSCredentials creds = new BasicAWSCredentials("dtc", "cmb");
-    AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withRegion("sousl'océan").withCredentials(new AWSStaticCredentialsProvider(creds)).build();
+    BasicAWSCredentials creds = new BasicAWSCredentials("a;f", "wq+sdf");
+    AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withRegion("sdkl").withCredentials(new AWSStaticCredentialsProvider(creds)).build();
         try {
             key = String.format("%s.%s", new SimpleDateFormat("ddMMyyyy").format(new Date()),
                               new Random().nextInt(9));

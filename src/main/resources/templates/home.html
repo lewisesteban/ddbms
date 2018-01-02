@@ -38,10 +38,10 @@
 		<a href="#" class="fh5co-offcanvass-close js-fh5co-offcanvass-close">Menu <i class="icon-cross"></i> </a>
 		<h1 class="fh5co-logo"><a class="navbar-brand" href="index.html">H o m e</a></h1>
 		<ul>
-			<li class="active"><a href="index.html">Home</a></li>
-			<li><a href="about.html">About</a></li>
-			<li><a href="pricing.html">Pricing</a></li>
-			<li><a href="contact.html">Contact</a></li>
+			<li class="active"><a href="top10">Top10</a></li>
+			<li><a href="/article">Standard Article</a></li>
+			<li><a href="/">New Article</a></li>
+			<li><a href="http://163.44.119.61:8080/#/cluster/all/overview">Admin</a></li>
 		</ul>
 		<h3 class="fh5co-lead">Connect with us</h3>
 		<p class="fh5co-social-icons">
@@ -74,12 +74,12 @@
 
 
 
-	<th:block th:each="data : ${datas}">
+	<th:block th:each="article : ${articles}">
 	<div class="item">
         		<div class="animate-box">
-					<a href="https://s3-ap-northeast-1.amazonaws.com/oha.you/georges.jpg" class="image-popup fh5co-board-img" th:title="${data.title}"><img th:src="@{data.image}"></img></a>
+					<a th:href="${#strings.concat('https://s3-ap-northeast-1.amazonaws.com/oha.you/', article.image)}" class="image-popup fh5co-board-img" th:title="${article.title}"><img th:src="${#strings.concat('https://s3-ap-northeast-1.amazonaws.com/oha.you/', article.image)}"></img></a>
         		</div>
-        		<div class="fh5co-desc" th:text="${data.title}">subtext</div>
+		<a th:href="${#strings.concat('http://localhost:8080/article/1', article.aid)}"><div class="fh5co-desc" th:text="${article.title}">subtext</div></a>
     </div>
    </th:block>
 

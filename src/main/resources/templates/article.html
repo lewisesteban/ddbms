@@ -8,7 +8,7 @@
     <meta name="description" content=""></meta>
     <meta name="author" content=""></meta>
 
-    <title>Clean Blog - Start Bootstrap Theme</title>
+    <title>article</title>
 
     <!-- Bootstrap core CSS -->
 
@@ -25,7 +25,7 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
       <div class="container">
-        <a class="navbar-brand" href="index.html">Start Bootstrap</a>
+        <a class="navbar-brand" href="/home">Home</a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           Menu
           <i class="fa fa-bars"></i>
@@ -33,16 +33,13 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-              <a class="nav-link" href="index.html">Home</a>
+              <a class="nav-link" href="/home">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="about.html">About</a>
+              <a class="nav-link" href="/">New article</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="post.html">Sample Post</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="contact.html">Contact</a>
+              <a class="nav-link" href="http://163.44.119.61:8080/#/cluster/all/overview">Admin</a>
             </li>
           </ul>
         </div>
@@ -56,10 +53,10 @@
         <div class="row">
           <div class="col-lg-8 col-md-10 mx-auto">
             <div class="post-heading">
-              <h1>Man must explore, and this is exploration at its greatest</h1>
+              <h1 th:text="${article.title}"></h1>
               <h2 class="subheading">Problems look mighty small from 150 miles up</h2>
               <span class="meta">Posted by
-                <a href="#">Start Bootstrap</a>
+                <a href="#" th:text="${article.authors}">Start Bootstrap</a>
                 on August 24, 2017</span>
             </div>
           </div>
@@ -97,7 +94,7 @@
             <p>As we got further and further away, it [the Earth] diminished in size. Finally it shrank to the size of a marble, the most beautiful you can imagine. That beautiful, warm, living object looked so fragile, so delicate, that if you touched it with a finger it would crumble and fall apart. Seeing this has to change a man.</p>
 
             <a href="#">
-              <img class="img-fluid" src="img/post-sample-image.jpg" alt=""></img>
+              <img class="img-fluid" th:src="${#strings.concat('https://s3-ap-northeast-1.amazonaws.com/oha.you/', article.image)}" alt=""></img>
             </a>
             <span class="caption text-muted">To go places and do things that have never been done before – that’s what living is all about.</span>
 

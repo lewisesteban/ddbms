@@ -42,7 +42,7 @@ public class Dal {
         PreparedStatement st = conn.prepareStatement("drop table if exists popular_rank;" +
         "create table popular_rank (\"id\" varchar(64), \"timestamp\" char(14), temporalGranularity varchar(32), articleAidList text);" +
         "drop table if exists be_read;" +
-        "create table be_read (\"id\" VARCHAR(64), \"timestamp\" char(14),\"aid\" char(5),\"readNum\" varchar(16),\"readUidList\" text," +
+        "create table be_read (\"id\" VARCHAR(64), \"timestamp\" char(14),\"aid\" char(7),\"readNum\" varchar(16),\"readUidList\" text," +
                 "\"commentNum\" varchar(16),\"commentUidList\" text,\"agreeNum\" varchar(16),\"agreeUidList\" text," +
                 "\"shareNum\" varchar(16),\"shareUidList\" text);");
         st.execute();
@@ -131,15 +131,29 @@ public class Dal {
     }
 
     public ArrayList<Article> getArticleList(int pageNumber, int pageSize, String category, String language) throws SQLException {
-        PreparedStatement st = conn.prepareStatement("Select \"timestamp\", aid, title, category, abstract, \"articleTags\", authors, \"language\" from article WHERE category = ? AND \"language\" = ? limit ? offset ?;");
-        st.setInt(1, pageSize);
-        st.setInt(2, pageSize * pageNumber);
-        st.setString(3, category);
-        st.setString(4, language);
+        PreparedStatement st = conn.prepareStatement("Select \"timestamp\", aid, title, category, abstract, \"articleTags\", authors, \"language\", \"image\" from article WHERE category = ? AND \"language\" = ? limit ? offset ?;");
+        st.setInt(3, pageSize);
+        st.setInt(4, pageSize * pageNumber);
+        st.setString(1, category);
+        st.setString(2, language);
         ResultSet rs = st.executeQuery();
         ArrayList<Article> articles = new ArrayList<>();
         while (rs.next()) {
-            articles.add(new Article(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8)));
+            articles.add(new Article(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9)));
+        }
+        rs.close();
+        st.close();
+        return articles;
+    }
+
+    public ArrayList<Article> getArticleList(int pageNumber, int pageSize) throws SQLException {
+        PreparedStatement st = conn.prepareStatement("Select \"timestamp\", aid, title, category, abstract, \"articleTags\", authors, \"language\", \"image\" from article limit ? offset ?;");
+        st.setInt(1, pageSize);
+        st.setInt(2, pageSize * pageNumber);
+        ResultSet rs = st.executeQuery();
+        ArrayList<Article> articles = new ArrayList<>();
+        while (rs.next()) {
+            articles.add(new Article(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9)));
         }
         rs.close();
         st.close();
@@ -147,7 +161,7 @@ public class Dal {
     }
 
     public ArrayList<Article> getArticleList(String[] articleIds) throws SQLException {
-        StringBuilder sql = new StringBuilder("Select \"timestamp\", aid, title, category, abstract, \"articleTags\", authors, \"language\" from article WHERE aid IN (");
+        StringBuilder sql = new StringBuilder("Select \"timestamp\", aid, title, category, abstract, \"articleTags\", authors, \"language\", \"image\" from article WHERE aid IN (");
         for (int i = 0; i < articleIds.length; ++i) {
             if (i != 0)
                 sql.append(",");
@@ -161,7 +175,7 @@ public class Dal {
         ResultSet rs = st.executeQuery();
         ArrayList<Article> articles = new ArrayList<>();
         while (rs.next()) {
-            articles.add(new Article(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8)));
+            articles.add(new Article(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9)));
         }
         rs.close();
         st.close();

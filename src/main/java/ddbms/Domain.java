@@ -5,12 +5,6 @@ import ddbms.models.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-enum temporalGranularity {
-    daily,
-    weekly,
-    monthly
-}
-
 public class Domain {
 
     private static String region = null;
@@ -28,6 +22,13 @@ public class Domain {
      */
     public static ArrayList<Article> viewArticles(int pageNumber, int pageSize, String category, String language) throws SQLException {
         return Dal.get().getArticleList(pageNumber, pageSize, category, language);
+    }
+
+    /**
+     * Returns a list of articles without their content
+     */
+    public static ArrayList<Article> viewArticles(int pageNumber, int pageSize) throws SQLException {
+        return Dal.get().getArticleList(pageNumber, pageSize);
     }
 
     /**
@@ -89,11 +90,11 @@ public class Domain {
     /**
      * Returns the most popular articles without their content
      */
-    public static ArrayList<Article> getPopularArticles(temporalGranularity t) throws SQLException {
+    public static ArrayList<Article> getPopularArticles(TemporalGranularity t) throws SQLException {
         String tStr;
-        if (t == temporalGranularity.daily)
+        if (t == TemporalGranularity.daily)
             tStr = "daily";
-        else if (t == temporalGranularity.weekly)
+        else if (t == TemporalGranularity.weekly)
             tStr = "weekly";
         else
             tStr = "monthly";
