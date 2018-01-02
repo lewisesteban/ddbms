@@ -79,7 +79,7 @@
         		<div class="animate-box">
 					<a th:href="${#strings.concat('https://s3-ap-northeast-1.amazonaws.com/oha.you/', article.image)}" class="image-popup fh5co-board-img" th:title="${article.title}"><img th:src="${#strings.concat('https://s3-ap-northeast-1.amazonaws.com/oha.you/', article.image)}"></img></a>
         		</div>
-		<a th:href="${#strings.concat('http://localhost:8080/article/1', article.aid)}"><div class="fh5co-desc" th:text="${article.title}">subtext</div></a>
+		<a th:href="${#strings.concat('http://localhost:8080/article/1/', article.aid)}"><div class="fh5co-desc" th:text="${article.title}">subtext</div></a>
     </div>
    </th:block>
 
